@@ -4,7 +4,7 @@ import s from './SearchBar.module.css';
 
 // const notify = () => toast('Here is your toast.');
 
-const SearchBar = ({ value, onSubmit }) => {
+const SearchBar = ({ value, onSubmit, onChange }) => {
   return (
     <header className={s.header}>
       <form className={s.form} onSubmit={onSubmit}>
@@ -15,6 +15,7 @@ const SearchBar = ({ value, onSubmit }) => {
           autoFocus
           placeholder="Search images and photos"
           value={value}
+          onChange={onChange}
         />
         <button className={s.btn} type="submit">
           Search

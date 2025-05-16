@@ -1,12 +1,11 @@
 import axios from 'axios';
 
-export const fetchHits = async () => {
+const MY_KEY = 'yNPR-89yPZQuBhnaYzUSUIH46QCcVM51IVaOx0cg-RM';
+
+export const fetchHits = async (values, page, signal) => {
   const response = await axios.get(
-    `https://api.unsplash.com/photos/?client_id=yNPR-89yPZQuBhnaYzUSUIH46QCcVM51IVaOx0cg-RM`
+    `https://api.unsplash.com/search/photos?client_id=${MY_KEY}&query=${values}&page=${page}`,
+    { signal }
   );
-  console.log(response);
-
-  console.log(response.data);
-
-  return response.data;
+  return response.data.results;
 };

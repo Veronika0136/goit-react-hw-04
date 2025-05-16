@@ -3,34 +3,55 @@ import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import { fetchHits } from '../services/api';
 import s from './App.module.css';
+import Loader from './Loader/Loader';
+import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
 
 const App = () => {
   const [hits, setHits] = useState([]);
-  const [values, setValues] = useState('');
+  const [values, setValues] = useState('photo');
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
+    const abortController = new AbortController();
     const getData = async () => {
       try {
-        const data = await fetchHits();
-        setHits(data);
+        setLoading(true);
+        const data = await fetchHits(values, page, abortController.signal);
+        setHits(prev => [...prev, ...data]);
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false);
       }
     };
     getData();
-  }, []);
+    return () => {
+      abortController.abort();
+    };
+  }, [values, page]);
 
   console.log(hits);
 
   const handleChangeInput = e => {
     setValues(e.target.value);
+  };
+
+  const handleSubmit = (values, options) => {
     console.log(values);
+    options.resetForm();
+  };
+
+  const handleChangePage = () => {
+    setPage(page + 1);
   };
 
   return (
     <div className={s.body}>
-      <SearchBar value={values} onSubmit={handleChangeInput} />
+      <SearchBar value={values} onSubmit={handleSubmit} onChange={handleChangeInput} />
       <ImageGallery arr={hits} />
+      <Loader loading={loading} />
+      <LoadMoreBtn onClick={handleChangePage} />
     </div>
   );
 };

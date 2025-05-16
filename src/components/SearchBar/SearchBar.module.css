@@ -4,7 +4,7 @@
 }
 
 .form {
-  width: 420px;
+  width: 425px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -12,6 +12,8 @@
 .input {
   width: 350px;
   padding: 3px;
+  border: 1px solid blueviolet;
+  border-radius: 4px;
   font-size: 16px;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -22,10 +24,12 @@
   padding: 3px;
   cursor: pointer;
   border: 1px solid blueviolet;
+  border-radius: 4px;
   transition: background-color 0.2s ease;
   color: blueviolet;
 }
 
 .btn:hover {
   background-color: #9660c8;
+  color: white;
 }
