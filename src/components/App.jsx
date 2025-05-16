@@ -5,12 +5,14 @@ import { fetchHits } from '../services/api';
 import s from './App.module.css';
 import Loader from './Loader/Loader';
 import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
+import ErrorMessage from './ErrorMessage/ErrorMessage';
 
 const App = () => {
   const [hits, setHits] = useState([]);
   const [values, setValues] = useState('photo');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -21,6 +23,7 @@ const App = () => {
         setHits(prev => [...prev, ...data]);
       } catch (err) {
         console.log(err);
+        setError(true);
       } finally {
         setLoading(false);
       }
@@ -51,6 +54,7 @@ const App = () => {
       <SearchBar value={values} onSubmit={handleSubmit} onChange={handleChangeInput} />
       <ImageGallery arr={hits} />
       <Loader loading={loading} />
+      <ErrorMessage error={error} />
       <LoadMoreBtn onClick={handleChangePage} />
     </div>
   );
