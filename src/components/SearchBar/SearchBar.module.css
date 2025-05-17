@@ -33,3 +33,8 @@
   background-color: #9660c8;
   color: white;
 }
+
+.err {
+  color: red;
+  font-size: 12px;
+}

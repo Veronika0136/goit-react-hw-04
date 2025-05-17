@@ -6,24 +6,32 @@ import s from './App.module.css';
 import Loader from './Loader/Loader';
 import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
 import ErrorMessage from './ErrorMessage/ErrorMessage';
+import toast from 'react-hot-toast';
 
 const App = () => {
   const [hits, setHits] = useState([]);
-  const [values, setValues] = useState('photo');
+  const [query, setQuery] = useState('photo');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [error, setError] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
 
   useEffect(() => {
     const abortController = new AbortController();
     const getData = async () => {
       try {
         setLoading(true);
-        const data = await fetchHits(values, page, abortController.signal);
-        setHits(prev => [...prev, ...data]);
+        const data = await fetchHits(query, page, abortController.signal);
+        setHits(prev => [...prev, ...data.results]);
+        setTotalPages(data.total_pages - 1);
       } catch (err) {
         console.log(err);
-        setError(true);
+        if (err.code !== 'ERR_CANCELED') {
+          setError(true);
+          toast.error(
+            'Whoops!Please enter some text to search for an image or try reloading this page!'
+          );
+        }
       } finally {
         setLoading(false);
       }
@@ -32,17 +40,14 @@ const App = () => {
     return () => {
       abortController.abort();
     };
-  }, [values, page]);
+  }, [query, page]);
 
   console.log(hits);
 
-  const handleChangeInput = e => {
-    setValues(e.target.value);
-  };
-
-  const handleSubmit = (values, options) => {
-    console.log(values);
-    options.resetForm();
+  const handleChangeQuery = newQuery => {
+    setQuery(newQuery);
+    setHits([]);
+    setPage(0);
   };
 
   const handleChangePage = () => {
@@ -51,11 +56,10 @@ const App = () => {
 
   return (
     <div className={s.body}>
-      <SearchBar value={values} onSubmit={handleSubmit} onChange={handleChangeInput} />
+      <SearchBar handleChangeQuery={handleChangeQuery} />
       <ImageGallery arr={hits} />
       <Loader loading={loading} />
-      <ErrorMessage error={error} />
-      <LoadMoreBtn onClick={handleChangePage} />
+      {page < totalPages && !loading && !error && <LoadMoreBtn onClick={handleChangePage} />}
     </div>
   );
 };
