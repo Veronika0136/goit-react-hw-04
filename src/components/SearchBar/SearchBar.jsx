@@ -1,5 +1,6 @@
 import React from 'react';
 import { Field, Form, Formik } from 'formik';
+import toast from 'react-hot-toast';
 import s from './SearchBar.module.css';
 
 const SearchBar = ({ handleChangeQuery }) => {
@@ -8,9 +9,9 @@ const SearchBar = ({ handleChangeQuery }) => {
   };
 
   const handleSubmit = (values, options) => {
-    console.log(values);
+    // console.log(values);
     handleChangeQuery(values.query);
-
+    if (!values.query) toast.error('Please enter some text to search for an image');
     options.resetForm();
   };
   return (

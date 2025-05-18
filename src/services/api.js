@@ -7,7 +7,6 @@ export const fetchHits = async (query, page, signal) => {
     `https://api.unsplash.com/search/photos?client_id=${MY_KEY}&query=${query}&page=${page}`,
     { signal }
   );
-  console.log(response.data);
 
   return response.data;
 };

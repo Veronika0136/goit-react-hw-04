@@ -1,8 +1,8 @@
 import React from 'react';
 
-const ImageCard = ({ url, alt }) => {
+const ImageCard = ({ url, alt, handleOpenImage, urlModal }) => {
   return (
-    <div>
+    <div onClick={() => handleOpenImage(urlModal)}>
       <img src={url} alt={alt} width={320} height={300} />
     </div>
   );

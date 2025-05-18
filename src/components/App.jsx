@@ -6,7 +6,7 @@ import s from './App.module.css';
 import Loader from './Loader/Loader';
 import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
 import ErrorMessage from './ErrorMessage/ErrorMessage';
-import toast from 'react-hot-toast';
+import ImageModal from './ImageModal/ImageModal';
 
 const App = () => {
   const [hits, setHits] = useState([]);
@@ -15,6 +15,8 @@ const App = () => {
   const [page, setPage] = useState(0);
   const [error, setError] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [image, setImage] = useState('');
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -25,12 +27,9 @@ const App = () => {
         setHits(prev => [...prev, ...data.results]);
         setTotalPages(data.total_pages - 1);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
         if (err.code !== 'ERR_CANCELED') {
           setError(true);
-          toast.error(
-            'Whoops!Please enter some text to search for an image or try reloading this page!'
-          );
         }
       } finally {
         setLoading(false);
@@ -42,8 +41,6 @@ const App = () => {
     };
   }, [query, page]);
 
-  console.log(hits);
-
   const handleChangeQuery = newQuery => {
     setQuery(newQuery);
     setHits([]);
@@ -54,12 +51,27 @@ const App = () => {
     setPage(page + 1);
   };
 
+  function openModal() {
+    setModalIsOpen(true);
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+  }
+
+  const handleOpenImage = img => {
+    setImage(img);
+    openModal();
+  };
+
   return (
     <div className={s.body}>
       <SearchBar handleChangeQuery={handleChangeQuery} />
-      <ImageGallery arr={hits} />
+      <ImageGallery arr={hits} handleOpenImage={handleOpenImage} />
       <Loader loading={loading} />
+      {error && <ErrorMessage />}
       {page < totalPages && !loading && !error && <LoadMoreBtn onClick={handleChangePage} />}
+      <ImageModal modalIsOpen={modalIsOpen} closeModal={closeModal} image={image} />
     </div>
   );
 };
