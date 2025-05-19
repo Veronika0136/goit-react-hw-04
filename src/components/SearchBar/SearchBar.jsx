@@ -9,9 +9,12 @@ const SearchBar = ({ handleChangeQuery }) => {
   };
 
   const handleSubmit = (values, options) => {
-    // console.log(values);
-    handleChangeQuery(values.query);
-    if (!values.query) toast.error('Please enter some text to search for an image');
+    const newQuery = values.query.trim();
+    if (newQuery) {
+      handleChangeQuery(newQuery);
+    } else {
+      toast.error('Please enter some text to search for an image');
+    }
     options.resetForm();
   };
   return (

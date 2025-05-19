@@ -10,7 +10,7 @@ import ImageModal from './ImageModal/ImageModal';
 
 const App = () => {
   const [hits, setHits] = useState([]);
-  const [query, setQuery] = useState('photo');
+  const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [error, setError] = useState(false);
@@ -19,6 +19,8 @@ const App = () => {
   const [image, setImage] = useState('');
 
   useEffect(() => {
+    if (!query) return;
+
     const abortController = new AbortController();
     const getData = async () => {
       try {
@@ -26,6 +28,7 @@ const App = () => {
         const data = await fetchHits(query, page, abortController.signal);
         setHits(prev => [...prev, ...data.results]);
         setTotalPages(data.total_pages - 1);
+        setError(false);
       } catch (err) {
         // console.log(err);
         if (err.code !== 'ERR_CANCELED') {
@@ -45,6 +48,7 @@ const App = () => {
     setQuery(newQuery);
     setHits([]);
     setPage(0);
+    setTotalPages(0);
   };
 
   const handleChangePage = () => {
